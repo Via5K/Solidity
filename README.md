@@ -105,3 +105,18 @@ Also, a constructor can be made ```payable```. By making it payable, we are allo
 
 ## Payable
 By writing payable keyword in front of any function or variable we allow that function to recieve and transfer the money.
+
+
+## Revert 
+Whenever we want to revert the transaction we use revert keyword, but in addition we also have to create a error.
+```error UnknownUser(address _to, address _from)```
+and along with this error message, we call the revert.
+Let us assume that we have a function where this revert is being used.
+
+```
+revert UnknownUser({
+    _to: currentAddress that is passed.
+    _from: theAddress that is passed inside the function
+});
+```
+This will be showed in the form of a error response.
