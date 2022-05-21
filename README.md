@@ -120,3 +120,84 @@ revert UnknownUser({
 });
 ```
 This will be showed in the form of a error response.
+
+
+## Truffle
+Okay so this was almost the basic stuff that we need, apart from that we will cover the advance stuff as we move on..
+But, setting truffle is one of the important thing.
+
+We first need to install truffle.
+And then have to create migrations file which will help us deploy our contracts on the Ganache Test Blockchain...
+
+*Migrations.sol* This will contain the migration  contract
+
+
+```
+pragma solidity ^0.5.0;
+
+/// @title Migrations contract 
+/// @author Via5K
+/// @dev Migrations are done in order or test network to run prooperly.
+contract Migrations{
+    address public owner;
+    uint public last_completed_migration;
+
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    modifier restricted{
+        if(msg.sender == owner) _;
+    }
+
+
+    function setCompleted(uint completed) public restricted{
+        last_completed_migration = completed;
+    }
+    function upgradeMigration(address _owner) public restricted{
+        Migrations upgraded = Migrations(_owner);
+        upgraded.setCompleted(last_completed_migration);
+    }
+
+}
+```
+
+Apart from this, we also have to setup the javascript file for the truffle migrations. And we will do that by creating a folder in root directory named: *1_initial_migration.js*
+
+*1_initial_migration.js*
+
+```
+const Migrations = artifacts.require("Migrations");
+//Migrations is the variable name where we are storing our contract which is also named as Migrations.
+
+module.exports = function (deployer) {
+  deployer.deploy(Migrations);
+};
+
+```
+
+Similarly we need to create a *deploy_contracts.js* file for the other contract. Here the file that will be included is the main file which links to all other contracts.
+
+
+```
+const Migrations = artifacts.require("Migrations");
+//Migrations is the variable name where we are storing our contract which is also named as Migrations.
+
+module.exports = async function (deployer) {
+  await.deployer.deploy(Migrations);
+};
+```
+
+So, if you dont want to write the code, you can also use:
+```truffle init``` This would have initialised the code for us.
+
+
+So the first thing we need to do is compile our contracts.
+0. ```truffle init```, This will create .js and a migrations file. Other than this if you want a contract to be deployed for ex: ```Tether.sol``` then creaet a file named: *2_deploy_contract.sol* and paste the same code as it was written in *1_initial_migrations.sol* and change variable and contract names.
+1. ```truffle compile```
+2. ```truffle migrate```: this will deploy the contracts. If successfull deployed, you can see the gas fees and contract addresses.
+3. We can aslo check the details of the contract by running it. We can run it by typing: ```truffle console```
+   1. ```t = await Tether.deployed()``` where i have written tether, it is the name of the contract. This should return **undefined**
+   2. Now simply type ```t```, this would return a whole lot of list about the contract details.
+   3. Now, we can run all the functions that we have defined inside the tether *ex:* ```t.name()```, ```t.decimals()``` etc.
+4. 
